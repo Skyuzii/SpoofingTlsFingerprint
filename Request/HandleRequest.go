@@ -1,6 +1,11 @@
 package Request
 
-type HandleGetRequest struct {
+import "github.com/Danny-Dasilva/CycleTLS/cycletls"
+
+type HandleRequest struct {
+	Cookies   []cycletls.Cookie `json:"cookies"`
+	Method    string            `json:"method"`
+	Body      string            `json:"body"`
 	Proxy     string            `json:"proxy"`
 	Timeout   int               `json:"timeout"`
 	Url       string            `json:"url"`

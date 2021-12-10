@@ -16,48 +16,49 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/check-status", CheckStatus).Methods("GET")
-	router.HandleFunc("/handle-get", HandleGet).Methods("POST")
+	router.HandleFunc("/handle", Handle).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
 func CheckStatus(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Set("Content-Type", "application/json")
-	success := "true"
-	json.NewEncoder(responseWriter).Encode(success)
+	json.NewEncoder(responseWriter).Encode("good")
 }
 
-func HandleGet(responseWriter http.ResponseWriter, request *http.Request) {
+func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Set("Content-Type", "application/json")
 
-	var handleGetRequest Request.HandleGetRequest
-	_ = json.NewDecoder(request.Body).Decode(&handleGetRequest)
+	var handleRequest Request.HandleRequest
+	_ = json.NewDecoder(request.Body).Decode(&handleRequest)
 	client := cycletls.Init()
 
-	resp, err := client.Do(handleGetRequest.Url, cycletls.Options{
-		Proxy:     handleGetRequest.Proxy,
-		Timeout:   handleGetRequest.Timeout,
-		Headers:   handleGetRequest.Headers,
-		Ja3:       handleGetRequest.Ja3,
-		UserAgent: handleGetRequest.UserAgent,
-	}, "GET")
+	resp, err := client.Do(handleRequest.Url, cycletls.Options{
+		Cookies:   handleRequest.Cookies,
+		Body:      handleRequest.Body,
+		Proxy:     handleRequest.Proxy,
+		Timeout:   handleRequest.Timeout,
+		Headers:   handleRequest.Headers,
+		Ja3:       handleRequest.Ja3,
+		UserAgent: handleRequest.UserAgent,
+	}, handleRequest.Method)
 
-	var handleGetResponse Response.HandleGetResponse
+	var handleResponse Response.HandleResponse
 
 	if err != nil {
-		handleGetResponse.Success = false
-		handleGetResponse.Error = err.Error()
+		handleResponse.Success = false
+		handleResponse.Error = err.Error()
 
-		json.NewEncoder(responseWriter).Encode(handleGetResponse)
+		json.NewEncoder(responseWriter).Encode(handleResponse)
 	}
 
-	handleGetResponse.Success = true
-	handleGetResponse.Payload = &Response.HandleGetResponsePayload{
+	handleResponse.Success = true
+	handleResponse.Payload = &Response.HandleResponsePayload{
 		Text:    DecodeResponse(&resp),
 		Headers: resp.Response.Headers,
 		Status:  resp.Response.Status,
 	}
 
-	json.NewEncoder(responseWriter).Encode(handleGetResponse)
+	json.NewEncoder(responseWriter).Encode(handleResponse)
 }
 
 func DecodeResponse(response *cycletls.Response) string {
