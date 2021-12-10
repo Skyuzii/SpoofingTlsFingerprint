@@ -33,13 +33,19 @@ func HandleGet(responseWriter http.ResponseWriter, request *http.Request) {
 	_ = json.NewDecoder(request.Body).Decode(&handleGetRequest)
 	client := cycletls.Init()
 
-	resp, err := client.Do(handleGetRequest.Url, cycletls.Options{
+	options := cycletls.Options{
 		Timeout:   handleGetRequest.Timeout,
 		Body:      "",
 		Headers:   handleGetRequest.Headers,
 		Ja3:       handleGetRequest.Ja3,
 		UserAgent: handleGetRequest.UserAgent,
-	}, "GET")
+	}
+
+	if handleGetRequest.Proxy != "" {
+		options.Proxy = handleGetRequest.Proxy
+	}
+
+	resp, err := client.Do(handleGetRequest.Url, options, "GET")
 
 	var responseText string
 	var handleGetResponse Response.HandleGetResponse
