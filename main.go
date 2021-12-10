@@ -33,21 +33,14 @@ func HandleGet(responseWriter http.ResponseWriter, request *http.Request) {
 	_ = json.NewDecoder(request.Body).Decode(&handleGetRequest)
 	client := cycletls.Init()
 
-	options := cycletls.Options{
+	resp, err := client.Do(handleGetRequest.Url, cycletls.Options{
+		Proxy:     handleGetRequest.Proxy,
 		Timeout:   handleGetRequest.Timeout,
-		Body:      "",
 		Headers:   handleGetRequest.Headers,
 		Ja3:       handleGetRequest.Ja3,
 		UserAgent: handleGetRequest.UserAgent,
-	}
+	}, "GET")
 
-	if handleGetRequest.Proxy != "" {
-		options.Proxy = handleGetRequest.Proxy
-	}
-
-	resp, err := client.Do(handleGetRequest.Url, options, "GET")
-
-	var responseText string
 	var handleGetResponse Response.HandleGetResponse
 
 	if err != nil {
@@ -57,22 +50,24 @@ func HandleGet(responseWriter http.ResponseWriter, request *http.Request) {
 		json.NewEncoder(responseWriter).Encode(handleGetResponse)
 	}
 
-	switch resp.Response.Headers["Content-Encoding"] {
-	case "gzip":
-		reader, _ := gzip.NewReader(strings.NewReader(resp.Response.Body))
-		readerResponse, _ := ioutil.ReadAll(reader)
-		responseText = string(readerResponse)
-		defer reader.Close()
-	default:
-		responseText = resp.Response.Body
-	}
-
 	handleGetResponse.Success = true
 	handleGetResponse.Payload = &Response.HandleGetResponsePayload{
-		Text:    responseText,
+		Text:    DecodeResponse(&resp),
 		Headers: resp.Response.Headers,
 		Status:  resp.Response.Status,
 	}
 
 	json.NewEncoder(responseWriter).Encode(handleGetResponse)
+}
+
+func DecodeResponse(response *cycletls.Response) string {
+	switch response.Response.Headers["Content-Encoding"] {
+	case "gzip":
+		reader, _ := gzip.NewReader(strings.NewReader(response.Response.Body))
+		defer reader.Close()
+		readerResponse, _ := ioutil.ReadAll(reader)
+		return string(readerResponse)
+	default:
+		return response.Response.Body
+	}
 }
