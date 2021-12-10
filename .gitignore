@@ -1,0 +1,13 @@
+.vs/
+bin/
+obj/
+Logs
+*.user
+/.idea
+.idea/
+*.suo
+*.DotSettings
+.config/
+.DS_Store
+/.vscode
+.vscode/
