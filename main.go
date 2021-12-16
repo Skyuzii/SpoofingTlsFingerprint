@@ -56,6 +56,8 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 		Text:    DecodeResponse(&resp),
 		Headers: resp.Response.Headers,
 		Status:  resp.Response.Status,
+		Cookies: resp.Response.Cookies,
+		Url:     resp.Response.Url,
 	}
 
 	json.NewEncoder(responseWriter).Encode(handleResponse)
