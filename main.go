@@ -5,7 +5,8 @@ import (
 	"Golang/Response"
 	"compress/gzip"
 	"encoding/json"
-	"github.com/Danny-Dasilva/CycleTLS/cycletls"
+	"fmt"
+	"github.com/Skyuzii/CycleTLS/cycletls"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -29,7 +30,7 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.Header().Set("Content-Type", "application/json")
 
 	var handleRequest Request.HandleRequest
-	_ = json.NewDecoder(request.Body).Decode(&handleRequest)
+	json.NewDecoder(request.Body).Decode(&handleRequest)
 	client := cycletls.Init()
 
 	resp, err := client.Do(handleRequest.Url, cycletls.Options{
@@ -45,9 +46,8 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	var handleResponse Response.HandleResponse
 
 	if err != nil {
+		fmt.Println(err)
 		handleResponse.Success = false
-		handleResponse.Error = err.Error()
-
 		json.NewEncoder(responseWriter).Encode(handleResponse)
 	}
 

@@ -2,7 +2,7 @@ module Golang
 
 go 1.17
 
-require github.com/Danny-Dasilva/CycleTLS/cycletls v0.0.0-20211013155517-473bed89bcf5
+require github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20211216112203-c4a2f5979f9d
 
 require (
 	github.com/dsnet/compress v0.0.1 // indirect

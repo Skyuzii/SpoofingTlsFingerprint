@@ -1,5 +1,5 @@
-github.com/Danny-Dasilva/CycleTLS/cycletls v0.0.0-20211013155517-473bed89bcf5 h1:wi+SI0+UmWqp9txB7rQG/T/4gOrg5MovyaDViXnoolw=
-github.com/Danny-Dasilva/CycleTLS/cycletls v0.0.0-20211013155517-473bed89bcf5/go.mod h1:3AJ4vUD/kpVSt7J1zDcDRG5mp3B1+Cc51pzG7+COGhQ=
+github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20211216112203-c4a2f5979f9d h1:lxlg/Qj09r0Zu0W5pmbbU0QdI6Mt1vYZYTiPH8ktSwU=
+github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20211216112203-c4a2f5979f9d/go.mod h1:S2MGbMpxEJHXh1jBr5IEmK8140BKEY9BvF+fkRuy6vo=
 github.com/dsnet/compress v0.0.1 h1:PlZu0n3Tuv04TzpfPbrnI0HW/YwodEXDS+oPKahKF0Q=
 github.com/dsnet/compress v0.0.1/go.mod h1:Aw8dCMJ7RioblQeTqt88akK31OvO8Dhf5JflhBbQEHo=
 github.com/dsnet/golib v0.0.0-20171103203638-1ea166775780/go.mod h1:Lj+Z9rebOhdfkVLjJ8T6VcRQv3SXugXy999NBtR9aFY=
