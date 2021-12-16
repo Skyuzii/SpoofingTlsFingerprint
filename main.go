@@ -49,6 +49,7 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 		fmt.Println(err)
 		handleResponse.Success = false
 		json.NewEncoder(responseWriter).Encode(handleResponse)
+		return
 	}
 
 	handleResponse.Success = true
