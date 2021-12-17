@@ -11,15 +11,21 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
 func main() {
+	port := "8000"
+	if len(os.Args) > 1 {
+		port = os.Args[1]
+	}
+
 	router := mux.NewRouter()
 	router.HandleFunc("/check-status", CheckStatus).Methods("GET")
 	router.HandleFunc("/handle", Handle).Methods("POST")
 	fmt.Println("The proxy server is running")
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
 
 func CheckStatus(responseWriter http.ResponseWriter, request *http.Request) {
@@ -33,6 +39,7 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	var handleRequest Request.HandleRequest
 	json.NewDecoder(request.Body).Decode(&handleRequest)
 	client := cycletls.Init()
+	defer client.Close()
 
 	resp, err := client.Do(handleRequest.Url, cycletls.Options{
 		Cookies:   handleRequest.Cookies,
