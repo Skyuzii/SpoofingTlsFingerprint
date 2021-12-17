@@ -18,8 +18,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/check-status", CheckStatus).Methods("GET")
 	router.HandleFunc("/handle", Handle).Methods("POST")
-	log.Fatal(http.ListenAndServe(":8000", router))
 	fmt.Println("The proxy server is running")
+	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
 func CheckStatus(responseWriter http.ResponseWriter, request *http.Request) {
