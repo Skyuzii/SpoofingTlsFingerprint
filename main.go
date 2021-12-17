@@ -19,6 +19,7 @@ func main() {
 	router.HandleFunc("/check-status", CheckStatus).Methods("GET")
 	router.HandleFunc("/handle", Handle).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
+	fmt.Println("The proxy server is running")
 }
 
 func CheckStatus(responseWriter http.ResponseWriter, request *http.Request) {
@@ -48,6 +49,7 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 		handleResponse.Success = false
+		handleResponse.Error = err.Error()
 		json.NewEncoder(responseWriter).Encode(handleResponse)
 		return
 	}
