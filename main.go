@@ -39,7 +39,6 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	var handleRequest Request.HandleRequest
 	json.NewDecoder(request.Body).Decode(&handleRequest)
 	client := cycletls.Init()
-	defer client.Close()
 
 	resp, err := client.Do(handleRequest.Url, cycletls.Options{
 		InsecureSkipVerify: handleRequest.InsecureSkipVerify,
