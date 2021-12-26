@@ -8,7 +8,7 @@ golang ^v1.17
 
 ## Запуск
 ```
-go run main.go
+go run main.go port
 ```
 
 ## Сборка в exe
