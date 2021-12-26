@@ -3,7 +3,7 @@ module Golang
 go 1.17
 
 require (
-	github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20211216163436-5f8416b3eec3
+	github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20211226204944-21867012df85
 	github.com/gorilla/mux v1.8.0
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect

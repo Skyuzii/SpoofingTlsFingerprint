@@ -42,13 +42,14 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	defer client.Close()
 
 	resp, err := client.Do(handleRequest.Url, cycletls.Options{
-		Cookies:   handleRequest.Cookies,
-		Body:      handleRequest.Body,
-		Proxy:     handleRequest.Proxy,
-		Timeout:   handleRequest.Timeout,
-		Headers:   handleRequest.Headers,
-		Ja3:       handleRequest.Ja3,
-		UserAgent: handleRequest.UserAgent,
+		InsecureSkipVerify: handleRequest.InsecureSkipVerify,
+		Cookies:            handleRequest.Cookies,
+		Body:               handleRequest.Body,
+		Proxy:              handleRequest.Proxy,
+		Timeout:            handleRequest.Timeout,
+		Headers:            handleRequest.Headers,
+		Ja3:                handleRequest.Ja3,
+		UserAgent:          handleRequest.UserAgent,
 	}, handleRequest.Method)
 
 	var handleResponse Response.HandleResponse
