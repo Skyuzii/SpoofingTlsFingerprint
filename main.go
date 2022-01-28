@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
+	url2 "net/url"
 	"os"
 	"strings"
 )
@@ -19,6 +21,11 @@ func main() {
 	port := "8000"
 	if len(os.Args) > 1 {
 		port = os.Args[1]
+	}
+
+	err := os.Setenv("tls13", "1")
+	if err != nil {
+		log.Println(err.Error())
 	}
 
 	router := mux.NewRouter()
@@ -40,15 +47,34 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	json.NewDecoder(request.Body).Decode(&handleRequest)
 	client := cycletls.Init()
 
+	var cookies []*http.Cookie
+	for _, cookie := range handleRequest.Cookies {
+		cookies = append(cookies, &http.Cookie{
+			Name:     cookie.Name,
+			Value:    cookie.Value,
+			Path:     cookie.Path,
+			Domain:   cookie.Domain,
+			Expires:  cookie.Expires,
+			MaxAge:   cookie.MaxAge,
+			Secure:   cookie.Secure,
+			HttpOnly: cookie.HTTPOnly,
+		})
+	}
+
+	cookiesJar, _ := cookiejar.New(nil)
+	requestUrl, _ := url2.Parse(handleRequest.Url)
+	cookiesJar.SetCookies(requestUrl, cookies)
+
 	resp, err := client.Do(handleRequest.Url, cycletls.Options{
+		CookiesJar:         cookiesJar,
 		InsecureSkipVerify: handleRequest.InsecureSkipVerify,
-		Cookies:            handleRequest.Cookies,
 		Body:               handleRequest.Body,
 		Proxy:              handleRequest.Proxy,
 		Timeout:            handleRequest.Timeout,
 		Headers:            handleRequest.Headers,
 		Ja3:                handleRequest.Ja3,
 		UserAgent:          handleRequest.UserAgent,
+		DisableRedirect:    handleRequest.DisableRedirect,
 	}, handleRequest.Method)
 
 	var handleResponse Response.HandleResponse
@@ -66,8 +92,20 @@ func Handle(responseWriter http.ResponseWriter, request *http.Request) {
 		Text:    DecodeResponse(&resp),
 		Headers: resp.Response.Headers,
 		Status:  resp.Response.Status,
-		Cookies: resp.Response.Cookies,
 		Url:     resp.Response.Url,
+	}
+
+	for _, cookie := range cookiesJar.Cookies(requestUrl) {
+		handleResponse.Payload.Cookies = append(handleResponse.Payload.Cookies, &cycletls.Cookie{
+			Name:     cookie.Name,
+			Value:    cookie.Value,
+			Path:     cookie.Path,
+			Domain:   cookie.Domain,
+			Expires:  cookie.Expires,
+			MaxAge:   cookie.MaxAge,
+			Secure:   cookie.Secure,
+			HTTPOnly: cookie.HttpOnly,
+		})
 	}
 
 	json.NewEncoder(responseWriter).Encode(handleResponse)

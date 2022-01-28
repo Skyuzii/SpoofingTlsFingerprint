@@ -13,4 +13,5 @@ type HandleRequest struct {
 	Ja3                string            `json:"ja3"`
 	Headers            map[string]string `json:"headers"`
 	InsecureSkipVerify bool              `json:"insecureSkipVerify"`
+	DisableRedirect    bool              `json:"disableRedirect"`
 }
