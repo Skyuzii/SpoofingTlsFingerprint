@@ -3,7 +3,7 @@ module Golang
 go 1.17
 
 require (
-	github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20220128211945-6f55b168d10b
+	github.com/Skyuzii/CycleTLS/cycletls v0.0.0-20220713140713-9dbda610a427
 	github.com/gorilla/mux v1.8.0
 )
 
